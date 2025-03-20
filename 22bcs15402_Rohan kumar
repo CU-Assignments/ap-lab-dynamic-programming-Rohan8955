@@ -1,0 +1,106 @@
+class Solution {
+public:
+    int climbStairs(int n) {
+        if (n == 1) return 1;
+        int prev1 = 1, prev2 = 2;
+        for (int i = 3; i <= n; i++) {
+            int curr = prev1 + prev2;
+            prev1 = prev2;
+            prev2 = curr;
+        }
+        return prev2;
+    }
+};
+--------------------------------------
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int sum = 0, maxi = INT_MIN;
+        for(int i = 0;i<nums.size();i++) {
+            sum += nums[i];
+            if(sum > maxi) {
+                maxi = sum;
+            }
+            if(sum < 0) {
+                sum = 0;
+            }
+        }
+        return maxi;
+    }
+};
+----------------------------------------
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if (n == 1) return nums[0];
+
+        int prev2 = nums[0];
+        int prev1 = max(nums[0], nums[1]);
+
+        for (int i = 2; i < n; i++) {
+            int curr = max(prev1, nums[i] + prev2);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return prev1;
+    }
+};
+-----------------------------------------
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int maxReach = 0;
+        int n = nums.size();
+
+        for (int i = 0; i < n; i++) {
+            if (i > maxReach) return false;
+            maxReach = max(maxReach, i + nums[i]);
+
+            if (maxReach >= n - 1) return true;
+        }
+
+        return false;
+    }
+};
+------------------------------------------
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector<vector<int>> dp(m, vector<int>(n, 1));
+
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            }
+        }
+        return dp[m-1][n-1];
+    }
+};
+-------------------------------------------
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if (amount == 0) return 0;
+
+        queue<pair<int, int>> q;
+        q.push({amount, 0});  // {remaining amount, steps}
+        vector<bool> visited(amount + 1, false);
+        visited[amount] = true;
+
+        while (!q.empty()) {
+            auto [currAmount, steps] = q.front();
+            q.pop();
+
+            for (int coin : coins) {
+                int newAmount = currAmount - coin;
+                if (newAmount == 0) return steps + 1;  // Found solution
+                if (newAmount > 0 && !visited[newAmount]) {
+                    q.push({newAmount, steps + 1});
+                    visited[newAmount] = true;
+                }
+            }
+        }
+        return -1;
+    }
+};
